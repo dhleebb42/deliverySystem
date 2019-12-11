@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "storage.h"
+#pragma warning(disable: 4996)
 
 /* 
   definition of storage cell structure ----
@@ -16,8 +17,7 @@ typedef struct {
 	int building;
 	int room;
 	int cnt;
-	char passwd[PASSWD_LEN+1];
-	
+	char passwd[PASSWD_LEN+1];	
 	char *context;
 } storage_t;
 
@@ -71,6 +71,7 @@ static int inputPasswd(int x, int y) {
 //char* filepath : filepath and name to write
 //return : 0 - backup was successfully done, -1 - failed to backup
 int str_backupSystem(char* filepath) {
+	return 0;
 		
 }
 
@@ -91,28 +92,28 @@ int str_createSystem(char* filepath) {
 	
 	int i;
 	
-	for(i=0; i<systemSize[0]; i++)
-	{
+	for (i = 0; i < systemSize[0]; i++){
 		deliverySystem[i] = (storage_t*)malloc(sizeof(storage_t)*systemSize[1]);
 	} 
 	
 	//master keyword 저장
-	fscanf(f, "&s", masterPassword);
+	fscanf(f, "%s", masterPassword);
+	
 	
 	//정보 저장
-	while(feof(f) == 0)
-	{
-		int a=0, b=0, c=0, d=0;
+	while (feof(f) == 0) {
+		int a = 0, b = 0, c = 0, d = 0;
 		char e[100];
 		fscanf(f, "%d %d %d %d %[^\n]s", &a, &b, &c, &d, e);
 		deliverySystem[a][b].building = c;
 		deliverySystem[a][b].room = d;
 		
-	//문자열 잘라서 passwd랑 context에 넣어보기
+		//문자열 잘라서 passwd랑 context에 넣어보기
 		
 		deliverySystem[a][b].cnt = 1;
 		storedCnt++;
 	}
+	
 	return 0;
 }
 
@@ -125,9 +126,7 @@ void str_freeSystem(void) {
 
 //print the current state of the whole delivery system (which cells are occupied and the destination of the each occupied cells)
 void str_printStorageStatus(void) {
-	
 	int i, j;
-	
 	printf("----------------------------- Delivery Storage System Status (%i occupied out of %i )-----------------------------\n\n", storedCnt, systemSize[0]*systemSize[1]);
 	
 	printf("\t");
