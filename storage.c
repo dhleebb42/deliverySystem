@@ -81,7 +81,21 @@ int str_backupSystem(char* filepath) {
 //return : 0 - successfully created, -1 - failed to create the system
 int str_createSystem(char* filepath) {
 
-	return 0;
+	FILE *fp = NULL;
+	fp = fopen("storage.txt", "r");
+	
+	int row;
+	int column;
+	int masterpassword;
+	
+	row=fgetc(fp);
+	column=fgetc(fp);
+	fgets(masterpassword,16,fp);
+	
+	if( fp == NULL )
+		return -1;
+	else 
+		return 0;	
 }
 
 //free the memory of the deliverySystem 
@@ -93,13 +107,14 @@ void str_freeSystem(void) {
 
 //print the current state of the whole delivery system (which cells are occupied and the destination of the each occupied cells)
 void str_printStorageStatus(void) {
+	
+	FILE *fp;
+	fp = fopen("storage.txt", "r");
+	
+	systemSize[0]=fgetc(fp);
+	systemSize[1]=fgetc(fp);
+	
 	int i, j;
-	
-	storage_t building, room, cnt;
-	
-	//storedCnt = cnt;
-	//systemSize[0] = building;
-	//systemSize[1] = room;
 	
 	printf("----------------------------- Delivery Storage System Status (%i occupied out of %i )-----------------------------\n\n", storedCnt, systemSize[0]*systemSize[1]);
 	
