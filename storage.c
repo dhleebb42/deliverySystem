@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "storage.h"
-#pragma warning(disable: 4996)
 
 /* 
   definition of storage cell structure ----
@@ -51,14 +50,30 @@ static void printStorageInside(int x, int y) {
 //and allocate memory to the context pointer
 //int x, int y : cell coordinate to be initialized
 static void initStorage(int x, int y) {
-	
-}
+
+	deliverySystem[x][y].cnt = 0; 
+		
+}//나머지 변수들도 초기화하기 
+
 
 //get password input and check if it is correct for the cell (x,y)
 //int x, int y : cell for password check
 //return : 0 - password is matching, -1 - password is not matching
 static int inputPasswd(int x, int y) {
-	
+
+	char passwd[PASSWD_LEN + 1];
+	printf("password: ");
+	scanf("%4s", passwd);
+	fflush(stdin);
+
+	if (strcmp(deliverySystem[x][y].passwd, passwd) == 0)
+	{
+		return 0;
+	}
+	else
+	{ 
+		return -1;
+	}
 }
 
 
@@ -71,8 +86,13 @@ static int inputPasswd(int x, int y) {
 //char* filepath : filepath and name to write
 //return : 0 - backup was successfully done, -1 - failed to backup
 int str_backupSystem(char* filepath) {
-	return 0;
-		
+	
+	FILE *f;
+	f = fopen(filepath, "w");
+	
+	fprintf(f, "%d %d", &systemSize[0], &systemSize[1]);
+	
+	return 0;		
 }
 
 
@@ -92,34 +112,55 @@ int str_createSystem(char* filepath) {
 	
 	int i;
 	
-	for (i = 0; i < systemSize[0]; i++){
+	for (i = 0; i < systemSize[0]; i++)
+	{
 		deliverySystem[i] = (storage_t*)malloc(sizeof(storage_t)*systemSize[1]);
 	} 
 	
 	//master keyword 저장
 	fscanf(f, "%s", masterPassword);
 	
+	//값 초기화
+	int x;
+	for (x = 0; x < systemSize[0]; x++) 
+	{
+		int y;
+		for (y = 0; y < systemSize[1]; y++) 
+		{
+			initStorage(x, y);
+		}
+	} 
 	
 	//정보 저장
-	while (feof(f) == 0) {
+	while (feof(f) == 0) 
+	{
 		int a = 0, b = 0, c = 0, d = 0;
 		char e[100];
 		fscanf(f, "%d %d %d %d %[^\n]s", &a, &b, &c, &d, e);
 		deliverySystem[a][b].building = c;
 		deliverySystem[a][b].room = d;
-		
-		//문자열 잘라서 passwd랑 context에 넣어보기
-		
 		deliverySystem[a][b].cnt = 1;
 		storedCnt++;
+		
+		char *ptr = strtok(e, " "); //문자열 자름
+		char *sArr[2] = { NULL, };
+		int i = 0;
+		while (ptr != NULL)            // 자른 문자열이 나오지 않을 때까지 반복
+		{
+			sArr[i] = ptr;             // 문자열을 자른 뒤 메모리 주소를 문자열 포인터 배열에 저장
+			i++;                       // 인덱스 증가
+
+			ptr = strtok(NULL, " ");   // 다음 문자열을 잘라서 포인터를 반환
+		}
+		strcpy(deliverySystem[a][b].passwd, sArr[0]); //passwd에 첫번째 문자열 복사
+		strcpy(&deliverySystem[a][b].context, sArr[1]);    //passwd에 두번째 문자열 복사 (이거 형식안맞는데 돌아가긴 돌아감)		
 	}
-	
 	return 0;
 }
 
 //free the memory of the deliverySystem 
 void str_freeSystem(void) {
-	
+	free(deliverySystem);
 }
 
 
@@ -182,6 +223,13 @@ int str_checkStorage(int x, int y) {
 //return : 0 - successfully put the package, -1 - failed to put
 int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_SIZE+1], char passwd[PASSWD_LEN+1]) {
 	
+	deliverySystem[x][y].building = nBuilding;
+	deliverySystem[x][y].room = nRoom;
+	deliverySystem[x][y].cnt = 1; //새로 택배를 넣어줬으므로 1 
+	strcpy(deliverySystem[x][y].passwd, msg); 
+	strcpy(&deliverySystem[x][y].context, passwd);
+	return 0;
+	//오류발생하면 -1 출력하게 만들기	
 }
 
 
@@ -191,14 +239,30 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 //int x, int y : coordinate of the cell to extract
 //return : 0 - successfully extracted, -1 = failed to extract
 int str_extractStorage(int x, int y) {
-	
+
+	if (inputPasswd(x, y)==0) 
+	{
+		printf(" -----------> Succeeded to extract package for (%i, %i)\n", x, y);
+		printf("building : %d\nroom : %d\nmsg : %s\npasswd : %s\n",deliverySystem[x][y].building, deliverySystem[x][y].room, &deliverySystem[x][y].context, deliverySystem[x][y].passwd);
+		deliverySystem[x][y].building = NULL;
+		deliverySystem[x][y].room = NULL;
+		deliverySystem[x][y].cnt = 0; //택배를 뺐으므로 0 
+		strcpy(deliverySystem[x][y].passwd, NULL);
+		strcpy(&deliverySystem[x][y].context, NULL);
+		
+		return 0;
+	}
+	else 
+	{
+		return -1;
+	}		
 }
 
 //find my package from the storage
 //print all the cells (x,y) which has my package
 //int nBuilding, int nRoom : my building/room numbers
 //return : number of packages that the storage system has
-int str_findStorage(int nBuilding, int nRoom) {
-	
-	//return cnt;
+int str_findStorage(int nBuilding, int nRoom) 
+{
+	return 0; 
 }
