@@ -81,21 +81,39 @@ int str_backupSystem(char* filepath) {
 //return : 0 - successfully created, -1 - failed to create the system
 int str_createSystem(char* filepath) {
 
-	FILE *fp = NULL;
-	fp = fopen("storage.txt", "r");
+	FILE *f;
+	f = fopen(filepath, "r");
 	
-	int row;
-	int column;
-	int masterpassword;
+	//구조체 2차원배열 동적할당
+	fscanf(f, "%d %d", &systemSize[0], &systemSize[1]);
 	
-	row=fgetc(fp);
-	column=fgetc(fp);
-	fgets(masterpassword,16,fp);
+	deliverySystem = (storage_t**)malloc(sizeof(storage_t*)*systemSize[0]);
 	
-	if( fp == NULL )
-		return -1;
-	else 
-		return 0;	
+	int i;
+	
+	for(i=0; i<systemSize[0]; i++)
+	{
+		deliverySystem[i] = (storage_t*)malloc(sizeof(storage_t)*systemSize[1]);
+	} 
+	
+	//master keyword 저장
+	fscanf(f, "&s", masterPassword);
+	
+	//정보 저장
+	while(feof(f) == 0)
+	{
+		int a=0, b=0, c=0, d=0;
+		char e[100];
+		fscanf(f, "%d %d %d %d %[^\n]s", &a, &b, &c, &d, e);
+		deliverySystem[a][b].building = c;
+		deliverySystem[a][b].room = d;
+		
+	//문자열 잘라서 passwd랑 context에 넣어보기
+		
+		deliverySystem[a][b].cnt = 1;
+		storedCnt++;
+	}
+	return 0;
 }
 
 //free the memory of the deliverySystem 
@@ -107,12 +125,6 @@ void str_freeSystem(void) {
 
 //print the current state of the whole delivery system (which cells are occupied and the destination of the each occupied cells)
 void str_printStorageStatus(void) {
-	
-	FILE *fp;
-	fp = fopen("storage.txt", "r");
-	
-	systemSize[0]=fgetc(fp);
-	systemSize[1]=fgetc(fp);
 	
 	int i, j;
 	
