@@ -93,8 +93,8 @@ int str_backupSystem(char* filepath)
 	FILE *f;
 	f = fopen(filepath, "w");
 	
-	fprintf(f, "%d %d", &systemSize[0], &systemSize[1]);
-	fprintf(f, "%s", masterPassword);
+	fprintf(f, "%d %d\n", systemSize[0], systemSize[1]);
+	fprintf(f, "%s\n", masterPassword);
 	
 	fclose(f);
 	
@@ -255,13 +255,15 @@ int str_extractStorage(int x, int y) {
 	
 	if (inputPasswd(x, y)==0) 
 	{
-		printf(" -----------> Succeeded to extract package for (%i, %i)\n", x, y);
-		printf("building : %d\nroom : %d\nmsg : %s\npasswd : %s\n",deliverySystem[x][y].building, deliverySystem[x][y].room, &deliverySystem[x][y].context, deliverySystem[x][y].passwd);
 		deliverySystem[x][y].building = NULL;
 		deliverySystem[x][y].room = NULL;
-		deliverySystem[x][y].cnt = 0; //'0' because extracted package 
+		deliverySystem[x][y].cnt = 0; //'0' because extracted package 	
 		strcpy(deliverySystem[x][y].passwd, NULL);
 		strcpy(&deliverySystem[x][y].context, NULL);
+	
+		printf(" -----------> Succeeded to extract package for (%i, %i)\n", x, y);
+		printf("building : %d\nroom : %d\nmsg : %s\npasswd : %s\n",deliverySystem[x][y].building, deliverySystem[x][y].room, &deliverySystem[x][y].context, deliverySystem[x][y].passwd);
+		
 		return 0;
 	}
 	else 
@@ -275,12 +277,32 @@ int str_extractStorage(int x, int y) {
 //int nBuilding, int nRoom : my building/room numbers
 //return : number of packages that the storage system has
 int str_findStorage(int nBuilding, int nRoom) {
-//	if()
-//	{
+
+	if(deliverySystem==0)
+	{	
 		return 0;
-//	}
-//	else
-//	{
-//		return cnt;
-//	}
+	}
+	else
+	{
+		char* filepath;
+		
+		FILE *f;
+		f = fopen(filepath, "r");
+	
+		int a = 0, b = 0, c = 0, d = 0;
+		char e[100];
+		fscanf(f, "%d %d %d %d %[^\n]s", &a, &b, &c, &d, e);
+		deliverySystem[a][b].building = c;
+		deliverySystem[a][b].room = d;
+		deliverySystem[a][b].cnt = 1;
+		storedCnt++;
+		
+		int i = fscanf;
+		
+		printf("%d %d %d %d %[^\n]", fscanf);
+		
+		int cnt = deliverySystem[nBuilding][nRoom].cnt;
+		
+		return cnt;
+	}
 }
