@@ -275,6 +275,12 @@ int str_extractStorage(int x, int y) {
 //int nBuilding, int nRoom : my building/room numbers
 //return : number of packages that the storage system has
 int str_findStorage(int nBuilding, int nRoom) {
-
-	return 0;
+//	if()
+//	{
+		return 0;
+//	}
+//	else
+//	{
+//		return cnt;
+//	}
 }
