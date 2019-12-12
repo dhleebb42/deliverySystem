@@ -57,7 +57,6 @@ static void initStorage(int x, int y) {
 	deliverySystem[x][y].room = NULL;
 	deliverySystem[x][y].context = NULL;
 	deliverySystem[x][y].passwd[PASSWD_LEN+1] = NULL;
-	
 }
 
 //get password input and check if it is correct for the cell (x,y)
@@ -112,7 +111,7 @@ int str_createSystem(char* filepath) {
 	FILE *f;
 	f = fopen(filepath, "r");
 
-	//구조체 2차원배열 동적할당
+	//structure 2 dimensional array dynamic memory allocation
 	fscanf(f, "%d %d", &systemSize[0], &systemSize[1]);
 
 	deliverySystem = (storage_t**)malloc(sizeof(storage_t*)*systemSize[0]);
@@ -124,10 +123,10 @@ int str_createSystem(char* filepath) {
 		deliverySystem[i] = (storage_t*)malloc(sizeof(storage_t)*systemSize[1]);
 	}
 
-	//master keyword 저장
+	//master keyword save
 	fscanf(f, "%s", masterPassword);
 	
-	//값initialization
+	//value initialization
 	int x;
 	for (x = 0; x < systemSize[0]; x++) 
 	{
@@ -138,8 +137,9 @@ int str_createSystem(char* filepath) {
 		}
 	} 
 
-	//정보 저장
-	while (feof(f) == 0) {
+	//information save
+	while (feof(f) == 0) 
+	{
 		int a = 0, b = 0, c = 0, d = 0;
 		char e[100];
 		fscanf(f, "%d %d %d %d %[^\n]s", &a, &b, &c, &d, e);
@@ -148,19 +148,19 @@ int str_createSystem(char* filepath) {
 		deliverySystem[a][b].cnt = 1;
 		storedCnt++;
 		
-		char *ptr = strtok(e, " "); //문자열 자름
+		char *ptr = strtok(e, " "); 							//cut the string
 		char *sArr[2] = { NULL, };
 		int i = 0;
-		while (ptr != NULL)
+		while (ptr != NULL)										//repeat until cut string do not appear
 		{
-			sArr[i] = ptr;
-			i++;
+			sArr[i] = ptr; 										//cut the string and save the memory address in string pointer array
+			i++; 												//index increase
 			
-			ptr = strtok(NULL, " ");
+			ptr = strtok(NULL, " "); 							//cut the following string and return the pointer
 		}
 		
-		strcpy(deliverySystem[a][b].passwd, sArr[0]);
-
+		strcpy(deliverySystem[a][b].passwd, sArr[0]); 			//copy first string in passwd
+		//strcpy(&deliverySystem[a][b].context, sArr[1]); 		//copy second string in passwd
 	}
 
 	fclose(f);
@@ -170,7 +170,9 @@ int str_createSystem(char* filepath) {
 
 //free the memory of the deliverySystem 
 void str_freeSystem(void) {
+
 	free(deliverySystem);
+
 }
 
 
@@ -235,12 +237,12 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 
 	deliverySystem[x][y].building = nBuilding;
 	deliverySystem[x][y].room = nRoom;
-	deliverySystem[x][y].cnt = 1; //새로 택배를 넣어줬으므로 1 
+	deliverySystem[x][y].cnt = 1; //'1' because input the new package 
 	strcpy(deliverySystem[x][y].passwd, msg); 
 	strcpy(&deliverySystem[x][y].context, passwd);
 	
 	return 0;
-	//오류발생하면 -1 출력하게 만들기
+	//make to return -1 when error occur
 }
 
 
@@ -257,7 +259,7 @@ int str_extractStorage(int x, int y) {
 		printf("building : %d\nroom : %d\nmsg : %s\npasswd : %s\n",deliverySystem[x][y].building, deliverySystem[x][y].room, &deliverySystem[x][y].context, deliverySystem[x][y].passwd);
 		deliverySystem[x][y].building = NULL;
 		deliverySystem[x][y].room = NULL;
-		deliverySystem[x][y].cnt = 0; //택배를 뺐으므로 0 
+		deliverySystem[x][y].cnt = 0; //'0' because extracted package 
 		strcpy(deliverySystem[x][y].passwd, NULL);
 		strcpy(&deliverySystem[x][y].context, NULL);
 		return 0;
