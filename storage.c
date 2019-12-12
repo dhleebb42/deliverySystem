@@ -53,8 +53,12 @@ static void printStorageInside(int x, int y) {
 static void initStorage(int x, int y) {
 
 	deliverySystem[x][y].cnt = 0; 
+	deliverySystem[x][y].building = NULL;
+	deliverySystem[x][y].room = NULL;
+	deliverySystem[x][y].context = NULL;
+	deliverySystem[x][y].passwd[PASSWD_LEN+1] = NULL;
 	
-}//나머지 변수도 초기화하기 
+}
 
 //get password input and check if it is correct for the cell (x,y)
 //int x, int y : cell for password check
@@ -87,6 +91,14 @@ static int inputPasswd(int x, int y) {
 //return : 0 - backup was successfully done, -1 - failed to backup
 int str_backupSystem(char* filepath) 
 {
+	FILE *f;
+	f = fopen(filepath, "w");
+	
+	fprintf(f, "%d %d", &systemSize[0], &systemSize[1]);
+	fprintf(f, "%s", masterPassword);
+	
+	fclose(f);
+	
 	return 0;	
 }
 
@@ -151,12 +163,14 @@ int str_createSystem(char* filepath) {
 
 	}
 
+	fclose(f);
+	
 	return 0;
 }
 
 //free the memory of the deliverySystem 
 void str_freeSystem(void) {
-
+	free(deliverySystem);
 }
 
 
@@ -259,5 +273,6 @@ int str_extractStorage(int x, int y) {
 //int nBuilding, int nRoom : my building/room numbers
 //return : number of packages that the storage system has
 int str_findStorage(int nBuilding, int nRoom) {
+
 	return 0;
 }
