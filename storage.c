@@ -297,11 +297,11 @@ int str_findStorage(int nBuilding, int nRoom) {
 		deliverySystem[a][b].cnt = 1;
 		storedCnt++;
 		
-		int i = fscanf;
-		
-		printf("%d %d %d %d %[^\n]", fscanf);
+		printf("%d %d %d %d %[^\n]", a, b, c, d, e);
 		
 		int cnt = deliverySystem[nBuilding][nRoom].cnt;
+		
+		fclose(f);
 		
 		return cnt;
 	}
